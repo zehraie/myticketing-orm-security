@@ -8,10 +8,12 @@ import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+//@Transactional  userRepository ye koydugumuz icin buraya koymadik bu annotation i
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -55,5 +57,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deletebyUserName(String username) {
   userRepository.deleteByUserName(username);
+    }
+
+    @Override
+    public void delete(String username) {
+       // I am not deleting data in db
+        User user= userRepository.findByUserName(username);
+        user.setIsDeleted(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDTO> listAllByRole(String role) {
+        //database de role e dayali bana data getirecke metod yok onu yazacagim
+        List<User> users = userRepository.findAllByRoleDescriptionIgnoreCase(role);
+        return users.stream().map(userMapper::convertToDTO).collect(Collectors.toList());
     }
 }
