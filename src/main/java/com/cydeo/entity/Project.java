@@ -15,14 +15,16 @@ import java.time.LocalDate;
 @Setter
 @Where(clause = "is_deleted=false")
 public class Project extends BaseEntity{
+    //the project wont be created with same code, will be unique
+    @Column(unique = true)
     private String projectCode;
     private String projectName;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private User assignedManager;
-    @Column(columnDefinition = "STARTDATE")
+    @Column(columnDefinition = "DATE")
     private LocalDate startDate;
-    @Column(columnDefinition = "ENDDATE")
+    @Column(columnDefinition = "DATE")
     private LocalDate endDate;
     private String projectDetail;
     @Enumerated(EnumType.STRING)
