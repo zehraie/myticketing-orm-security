@@ -1,11 +1,16 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ProjectDTO;
+import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Project;
+import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.mapper.ProjectMapper;
+import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.ProjectRepository;
+import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.ProjectService;
+import com.cydeo.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +20,16 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final UserService userService;
+    private final UserMapper userMapper;
+    private final TaskRepository taskRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, UserService userService, UserMapper userMapper, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
+        this.userService = userService;
+        this.userMapper = userMapper;
+        this.taskRepository = taskRepository;
     }
 
 
@@ -69,7 +80,27 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void complete(String projectCode) {
         Project project = projectRepository.findByProjectCode(projectCode);
-        project.setProjectStatus(Status.OPEN);
+        project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
     }
+
+    @Override
+    public List<ProjectDTO> listAllProjectDetails() {// sonunda donusturecegim ProjectDTO
+        //harold@manager.com login in the system,when click the project status then see the all project
+        //I need to get all project and assign to this manager
+        //login ile aliyourz user i asagida
+        UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
+        User user = userMapper.convertToEntity(currentUserDTO);
+        List<Project> list = projectRepository.findAllByAssignedManager(user); //User object entity needs
+        return list.stream().map(project->{
+            ProjectDTO obj = projectMapper.convertToDTO(project);
+            obj.setUnfinishedTaskCounts(taskRepository.totalNonCompletedTask(project.getProjectCode()));
+            obj.setUnfinishedTaskCounts(taskRepository.totalCompletedTask(project.getProjectCode()));
+            return obj;
+        }).collect(Collectors.toList());
+    }
+    //list project icinde, hicbitr projede project code ve digerleri assigend manager,  da var database den bakabiliriz
+    //ama project-status.html file da unfinishedTask_count yok ve completeTestcount da yok
+    //ama ProjectDTO da var   vede taskTable dadavar
+    //list projed her birine set yapacagim bu olmayanlari
 }

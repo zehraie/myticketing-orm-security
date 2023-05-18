@@ -96,19 +96,18 @@ public class ProjectController {
         return "redirect:/project/create";
 
     }
-//
-//    @GetMapping("/manager/project-status")
-//    public String getProjectByManager(Model model) {
-//
-//        UserDTO manager = userService.findById("john@cydeo.com");
-//
-//        List<ProjectDTO> projects = projectService.getCountedListOfProjectDTO(manager);
-//
-//        model.addAttribute("projects", projects);
-//
-//        return "/manager/project-status";
-//    }
-//
+//specific manager log in the system, click the project status hopepage then see all the project and assigned
+    // to himself  ,there was a issue howmany task completed, and OPEN
+    @GetMapping("/manager/project-status")
+    public String getProjectByManager(Model model) {
+ List<ProjectDTO> projects = projectService.listAllProjectDetails();
+
+
+        model.addAttribute("projects", projects);
+
+        return "/manager/project-status";
+    }
+
 //    @GetMapping("/manager/complete/{projectCode}")
 //    public String managerCompleteProject(@PathVariable("projectCode") String projectCode) {
 //        projectService.complete(projectService.findById(projectCode));
