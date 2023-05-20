@@ -192,9 +192,13 @@
                                                         <button type="button" class="btn btn-danger rounded-0">Delete
                                                         </button>
                                                     </a>
-                                                    <a th:href="@{/project/complete/{id}(id=${project.getProjectCode()})}">
-                                                        <button type="button" class="btn btn-info rounded-0">Complete
-                                                        </button>
+
+                                                    <a th:if="${project.unfinishedTaskCounts == 0 && project.projectStatus.value != 'Completed'}"
+                                                       class="btn btn-info rounded-0"
+                                                       th:href="@{/project/complete/{id}(id=${project.getProjectCode()})}">Complete
+                                                    </a>
+                                                    <a th:if="${project.unfinishedTaskCounts > 0 || project.projectStatus.value == 'Completed'}"
+                                                       class="btn btn-info rounded-0 disabled-button">Complete
                                                     </a>
                                                 </td>
                                             </tr>

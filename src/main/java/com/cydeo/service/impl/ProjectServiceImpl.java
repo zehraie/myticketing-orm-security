@@ -110,4 +110,11 @@ public class ProjectServiceImpl implements ProjectService {
     //ama project-status.html file da unfinishedTask_count yok ve completeTestcount da yok
     //ama ProjectDTO da var   vede taskTable dadavar
     //list projed her birine set yapacagim bu olmayanlari
+    @Override
+    public List<ProjectDTO> readAllByAssignedManager(User assignedManager) {
+        List<Project> list= projectRepository.findAllByAssignedManager(assignedManager);
+      return list.stream().map(projectMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+
 }
