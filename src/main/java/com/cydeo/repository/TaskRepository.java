@@ -22,7 +22,7 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
     //p.id  den sonra BOSLUK OLMALI
     List<Task> findAllByProject(Project project);
 
-    List<Task> findAllByStatusIsNotAndAssignedEmployee(Status status, User loggedInUser);
+    List<Task> findAllByTaskStatusIsNotAndAssignedEmployee(Status status, User loggedInUser);
 
     List<Task> findAllByTaskStatusAndAssignedEmployee(Status status, User loggedInUser);
 }

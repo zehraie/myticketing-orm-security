@@ -127,7 +127,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
         // think one user logged in, employee see only see own task
         User loggedInUser = userRepository.findByUserName("john@employee.com");
-        List<Task> list = taskRepository.findAllByStatusIsNotAndAssignedEmployee(status,loggedInUser);
+        List<Task> list = taskRepository.findAllByTaskStatusIsNotAndAssignedEmployee(status,loggedInUser);
 
         return list.stream().map(taskMapper::convertToDTO).collect(Collectors.toList());
     }
