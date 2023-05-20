@@ -94,8 +94,8 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> list = projectRepository.findAllByAssignedManager(user); //User object entity needs
         return list.stream().map(project->{
             ProjectDTO obj = projectMapper.convertToDTO(project);
-            obj.setUnfinishedTaskCounts(taskRepository.totalNonCompletedTask(project.getProjectCode()));
-            obj.setUnfinishedTaskCounts(taskRepository.totalCompletedTask(project.getProjectCode()));
+            obj.setUnfinishedTaskCounts(taskRepository.totalNonCompletedTasks(project.getProjectCode()));
+            obj.setUnfinishedTaskCounts(taskRepository.totalCompletedTasks(project.getProjectCode()));
             return obj;
         }).collect(Collectors.toList());
     }
