@@ -10,6 +10,7 @@ import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.ProjectRepository;
 import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.ProjectService;
+import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,15 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserService userService;
     private final UserMapper userMapper;
     private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, UserService userService, UserMapper userMapper, TaskRepository taskRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, UserService userService, UserMapper userMapper, TaskRepository taskRepository, TaskService taskService) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
         this.userService = userService;
         this.userMapper = userMapper;
         this.taskRepository = taskRepository;
+        this.taskService = taskService;
     }
 
 
@@ -73,7 +76,10 @@ public class ProjectServiceImpl implements ProjectService {
         // bring to database the project
         Project project = projectRepository.findByProjectCode(code);
         project.setIsDeleted(true);
+        project.setProjectCode(project.getProjectCode()+"-"+project.getId());
         projectRepository.save(project);
+        //when we delete the project we have to delete also task
+        taskService.deleteByProject(projectMapper.convertToDTO(project));
 
     }
 
@@ -82,6 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+        taskService.completeByProject(projectMapper.convertToDTO(project));
     }
 
     @Override

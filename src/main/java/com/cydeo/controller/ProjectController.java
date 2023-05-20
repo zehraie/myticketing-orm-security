@@ -38,7 +38,7 @@ public class ProjectController {
 
     //  Asagida fill yapip SAVE yaptigimizda cagiriyor
     @PostMapping("/create")
-    public String insertProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -78,10 +78,10 @@ public class ProjectController {
         return "/project/update";
 
     }
-
+// @Valid can be use inside metod parameter
     //then updating the project
     @PostMapping("/update")
-    public String updateProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+    public String updateProject( @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
