@@ -8,9 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+/*
+In the given code snippet, the constructor of the UserPrincipal class takes a User object as a parameter. This User object represents the user entity, which contains information about the user such as their username, password, role, and account status.
+ */
 
 public class UserPrincipal implements UserDetails {
-    private User user; //I want to have access to user, this is entity
+    private User user; // ,user field of the UserPrincipal class
 
     public UserPrincipal(User user) {
         this.user = user;

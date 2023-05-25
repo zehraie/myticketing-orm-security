@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
        // use this credentials --> admin@admin.com   password ->Abc1
-        return http
+        return http    // gives authorizing
                 .authorizeRequests()  // related pages
                 //.antMatchers("/user/**").hasRole("Admin")// /user/** every method under only access by AADMIN,--> underscore koymuyor
                 .antMatchers("/user/**").hasAuthority("Admin")//  automaticly olarak underscore koyuyor for db ROLE_ADMIN
@@ -68,6 +69,10 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/welcome") // landin paage
                 .failureUrl("/login?error=true")
                 .permitAll()  //ever one can access this log in page
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login")
                 .and().build();
     }
 
