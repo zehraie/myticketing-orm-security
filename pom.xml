@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cydeo</groupId>
-    <artifactId>myticketing-orm</artifactId>
+    <artifactId>myticketing-orm-security</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>myticketing-orm</name>
     <description>myticketing-orm</description>
@@ -29,6 +29,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
 
         <dependency><groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
