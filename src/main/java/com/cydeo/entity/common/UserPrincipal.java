@@ -59,4 +59,8 @@ public class UserPrincipal implements UserDetails {
         return this.user.isEnabled();
     }
     //conversion class, going to do mapping
+
+    public Long getId(){
+      return   this.user.getId();
+    }
 }
