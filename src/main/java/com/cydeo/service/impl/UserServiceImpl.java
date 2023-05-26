@@ -9,8 +9,8 @@ import com.cydeo.repository.UserRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +23,14 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ProjectService projectService;
     private final TaskService taskService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, @Lazy ProjectService projectService, TaskService taskService) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectService projectService, TaskService taskService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.projectService = projectService;
         this.taskService = taskService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -45,8 +47,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    // encoded formata cevirecegimizden asagidaki comment off olan ni kullanamayiz
+    // database de password Abc1 olarak kaydedilmesin diye save  olurken password da encode yapiyoruz
     public void save(UserDTO dto) {
-        userRepository.save(userMapper.convertToEntity(dto));
+        dto.setEnabled(true); // this field UIdan gelmiyecegi icin onu save yaparken set yapmaliyiz, , user is active
+        User obj = userMapper.convertToEntity(dto);
+        obj.setPassWord(passwordEncoder.encode(obj.getPassWord()));
+        userRepository.save(obj);
+       // userRepository.save(userMapper.convertToEntity(dto));
     }
 
     @Override

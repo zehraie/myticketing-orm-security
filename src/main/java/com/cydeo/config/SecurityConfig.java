@@ -1,23 +1,24 @@
 package com.cydeo.config;
 
+import com.cydeo.service.SecurityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration // I want to use something  from Spring , I need some class, interface so build this classsc-1067
 public class SecurityConfig {
+
+    private final SecurityService securityService;
+    private final  AuthSuccessHandler authSuccessHandler;
+
+    public SecurityConfig(SecurityService securityService, AuthSuccessHandler authSuccessHandler) {
+        this.securityService = securityService;
+        this.authSuccessHandler = authSuccessHandler;
+    }
+
+
 //    @Bean // what spring provides to me?
 //    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         // I am creating my user usning Spring classes
@@ -48,9 +49,9 @@ public class SecurityConfig {
                 //.antMatchers("/user/**").hasRole("Admin")// /user/** every method under only access by AADMIN,--> underscore koymuyor
                 .antMatchers("/user/**").hasAuthority("Admin")//  automaticly olarak underscore koyuyor for db ROLE_ADMIN
                                                 // ADMIN is not ADMIN in db it is Admin so needs to be match.
-                .antMatchers("/project/**").hasRole("Manager")// /user/** every method under only access by AADMIN :
-                .antMatchers("/task/employee/**").hasRole("Employee")// /user/** every method under only access by AADMIN
-                .antMatchers("/task/**").hasRole("Employee")// /user/** every method under only access by AADMIN
+                .antMatchers("/project/**").hasAuthority("Manager")// /user/** every method under only access by AADMIN :
+                .antMatchers("/task/employee/**").hasAuthority("Employee")// /user/** every method under only access by AADMIN
+                .antMatchers("/task/**").hasAuthority("Manager")// /user/** every method under only access by AADMIN
                                     //hasAnyRole
                 //.antMatchers("/task/**").hasAnyRole("EMPLOYEE","ADMIN")
                 //.antMatchers("task/**").hasAuthority("ROLE_EMPLOYEE")  //hasAuthority underscore koymali uymasi icin
@@ -66,13 +67,19 @@ public class SecurityConfig {
                // .httpBasic()  //not my page, it is pop up page small
                 .formLogin()  // I want to use this endPoint page
                 .loginPage("/login")
-                .defaultSuccessUrl("/welcome") // landin paage
+              //  .defaultSuccessUrl("/welcome") // landin paage, after AuthSuccessHandler class created we land on different page based on the role
+                .successHandler(authSuccessHandler)
                 .failureUrl("/login?error=true")
                 .permitAll()  //ever one can access this log in page
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login")
+                .and()
+                .rememberMe()
+                .tokenValiditySeconds(120)
+                .key("cydeo")
+                .userDetailsService(securityService)
                 .and().build();
     }
 

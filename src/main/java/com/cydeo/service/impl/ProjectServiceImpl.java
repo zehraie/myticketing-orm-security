@@ -12,6 +12,7 @@ import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskRepository taskRepository;
     private final TaskService taskService;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, UserService userService, UserMapper userMapper, TaskRepository taskRepository, TaskService taskService) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, @Lazy UserService userService, UserMapper userMapper, TaskRepository taskRepository, TaskService taskService) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
         this.userService = userService;
@@ -96,7 +97,8 @@ public class ProjectServiceImpl implements ProjectService {
         //harold@manager.com login in the system,when click the project status then see the all project
         //I need to get all project and assign to this manager
         //login ile aliyourz user i asagida
-        UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
+       // UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
+        UserDTO currentUserDTO = userService.findByUserName("mike@gmail.com"); // for manager username, admin@admin.com, passeord Abc1 ile giris yap Abc1 sonra mike smith and Abc1 password olacak sekilde manager create et->logout yap-> sonra bu creadiantial lar ile giris yap->create project navigate yapabilirsin
         User user = userMapper.convertToEntity(currentUserDTO);
         List<Project> list = projectRepository.findAllByAssignedManager(user); //User object entity needs
         return list.stream().map(project->{
