@@ -13,6 +13,7 @@ import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -98,7 +99,10 @@ public class ProjectServiceImpl implements ProjectService {
         //I need to get all project and assign to this manager
         //login ile aliyourz user i asagida
        // UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
-        UserDTO currentUserDTO = userService.findByUserName("mike@gmail.com"); // for manager username, admin@admin.com, passeord Abc1 ile giris yap Abc1 sonra mike smith and Abc1 password olacak sekilde manager create et->logout yap-> sonra bu creadiantial lar ile giris yap->create project navigate yapabilirsin
+        //we do not hard coded user, SecurityContextHolder of spring will capture user's name and other features
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        //UserDTO currentUserDTO = userService.findByUserName("mike@gmail.com"); // for manager username, admin@admin.com, passeord Abc1 ile giris yap Abc1 sonra mike smith and Abc1 password olacak sekilde manager create et->logout yap-> sonra bu creadiantial lar ile giris yap->create project navigate yapabilirsin
+        UserDTO currentUserDTO = userService.findByUserName(username); // for manager username, admin@admin.com, passeord Abc1 ile giris yap Abc1 sonra mike smith and Abc1 password olacak sekilde manager create et->logout yap-> sonra bu creadiantial lar ile giris yap->create project navigate yapabilirsin
         User user = userMapper.convertToEntity(currentUserDTO);
         List<Project> list = projectRepository.findAllByAssignedManager(user); //User object entity needs
         return list.stream().map(project->{
